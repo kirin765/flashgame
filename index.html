@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>플래시 게임</title>
+
+  <!-- Ruffle 공식 CDN 사용 (별도 ruffle.js 업로드 안 해도 됨) -->
+  <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- Ruffle이 자동으로 감지해서 실행할 embed 태그 -->
+  <embed src="game.swf" width="800" height="600">
+</body>
+</html>
