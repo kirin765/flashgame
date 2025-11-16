@@ -21,6 +21,22 @@
 </head>
 <body>
   <!-- Ruffle이 자동으로 감지해서 실행할 embed 태그 -->
-  <embed src="/flashgame/mahjong.swf">
+  <script>
+  // URL 파라미터 swfsrc 가져오기
+  const urlParams = new URLSearchParams(window.location.search);
+  const swfFile = urlParams.get("swfsrc");
+
+  if (!swfFile) {
+    document.body.innerHTML = "<p style='color:white'>swfsrc 파라미터가 필요합니다.</p>";
+  } else {
+    // embed 태그 생성
+    const embed = document.createElement("embed");
+    embed.src = swfFile;      // 여기서 swf 주소 주입
+    embed.width = "800";
+    embed.height = "600";
+
+    document.body.appendChild(embed);
+  }
+</script>
 </body>
 </html>
