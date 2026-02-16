@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>플래시 게임</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      background: #020617;
+      color: #e5e7eb;
+    }
+    header {
+      padding: 12px 16px;
+      border-bottom: 1px solid #1f2937;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #020617;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header a {
+      color: #9ca3af;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    header a:hover {
+      color: #22c55e;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 18px;
+      flex: 1;
+    }
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    .meta {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 12px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+      margin-bottom: 16px;
+    }
+    .tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      color: #9ca3af;
+    }
+    .game-frame-wrap {
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #111827;
+    }
+    .game-frame-inner {
+      width: 100%;
+      height: 480px;
+    }
+    @media (max-width: 640px) {
+      .game-frame-inner {
+        height: 360px;
+      }
+    }
+    .desc {
+      margin-top: 16px;
+      font-size: 14px;
+      color: #d1d5db;
+      line-height: 1.5;
+    }
+    #tagList { display: none; }
+
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html">← 목록으로</a>
+    <h1 id="gameTitle">플래시 게임</h1>
+  </header>
+
+  <main>
+    <div class="meta" id="gameMeta"></div>
+    <div class="tags" id="tagList"></div>
+
+    <div class="game-frame-wrap">
+      <!-- 여기 안에 object/embed를 JS로 주입 -->
+      <div id="gamePlayer" class="game-frame-inner"></div>
+    </div>
+
+    <div class="desc" id="gameDesc"></div>
+  </main>
+
+  <script>
+    const BASE_TAGS = [
+      "플래시게임", "플래시", "flash game", "ruffle",
+      "고전게임", "추억의게임", "옛날게임",
+      "웹게임", "무료게임", "온라인게임",
+      "웹게임추천", "pc게임", "browser game"
+    ];
+
+    function getSlugFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('slug');
+    }
+
+    async function loadGame() {
+      const slug = getSlugFromUrl();
+      const titleEl = document.getElementById('gameTitle');
+
+      if (!slug) {
+        titleEl.textContent = '잘못된 접근입니다. (slug 없음)';
+        return;
+      }
+
+      try {
+        const res = await fetch('games.json');
+        const games = await res.json();
+        const game = games.find(g => g.slug === slug);
+
+        if (!game) {
+          titleEl.textContent = '게임을 찾을 수 없습니다.';
+          return;
+        }
+
+        document.title = `${game.title} - 플래시 게임`;
+        titleEl.textContent = game.title;
+
+        // 메타 / 설명
+        document.getElementById('gameMeta').textContent =
+          `${game.category || '플래시게임'} · ID: ${game.id}`;
+
+        const descEl = document.getElementById('gameDesc');
+        if (game.description && game.description.trim()) {
+          descEl.textContent = game.description;
+        } else {
+          descEl.textContent = '플래시 기반 고전 웹게임입니다.';
+        }
+
+        // 태그 (공통 + 게임 제목)
+        const tagList = document.getElementById('tagList');
+        const tags = [...BASE_TAGS, game.title];
+        tags.forEach(t => {
+          const span = document.createElement('span');
+          span.className = 'tag';
+          span.textContent = t;
+          tagList.appendChild(span);
+        });
+
+        // SWF 경로 (네 서버 구조에 맞게 조정)
+        // 예: /swf/파일명.swf
+        const swfPath = `/swf/${encodeURIComponent(game.filename)}`;
+
+        // object + embed 주입 (네가 제시한 패턴)
+        const player = document.getElementById('gamePlayer');
+        player.innerHTML = `
+          <object data="${swfPath}"
+                  type="application/x-shockwave-flash"
+                  width="100%" height="100%">
+            <param name="movie" value="${swfPath}">
+            <param name="allowScriptAccess" value="sameDomain">
+            <param name="allowFullScreen" value="true">
+            <embed src="${swfPath}"
+                   width="100%" height="100%"
+                   allowScriptAccess="sameDomain"
+                   allowFullScreen="true" />
+          </object>
+        `;
+      } catch (e) {
+        console.error(e);
+        titleEl.textContent = '오류가 발생했습니다.';
+      }
+    }
+
+    loadGame();
+  </script>
+
+  <!-- Ruffle: 네가 제시한 방식 그대로 body 끝에서 로드 -->
+  <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+</body>
+</html>
