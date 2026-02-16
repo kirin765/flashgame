@@ -4,15 +4,24 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5811631777061641"
      crossorigin="anonymous"></script>  
 <meta charset="UTF-8" />
-  <title>플래시 게임 모음</title>
+  <title>플래시 게임 모음 | 고전 온라인 게임</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="google-adsense-account" content="ca-pub-5811631777061641">
+  <meta name="description" content="무료 고전 플래시 게임 모음. 둥근해, 피아노, मज़ेदार 게임 등을Browser에서 바로 플레이" />
+  <meta name="keywords" content="플래시게임, 고전게임, 온라인게임, 웹게임, 무료게임, browser game" />
+  <meta property="og:title" content="플래시 게임 모음" />
+  <meta property="og:description" content="무료 고전 플래시 게임 모음.Browser에서 바로 플레이" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>" />
+  <meta name="google-adsense-account" content="ca-pub-5811631777061641">
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
       background: #111827;
       color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
     header {
       padding: 16px 24px;
@@ -40,20 +49,29 @@
     }
     .search-box input {
       flex: 1;
-      padding: 8px 10px;
+      padding: 10px 14px;
       border-radius: 8px;
-      border: 1px solid #4b5563;
-      background: #020617;
+      border: 1px solid #374151;
+      background: #1f2937;
       color: #e5e7eb;
       outline: none;
+      font-size: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
     .search-box input:focus {
       border-color: #22c55e;
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+    }
+    .search-box input::placeholder {
+      color: #6b7280;
     }
     main {
       padding: 16px 24px 32px;
       max-width: 1200px;
       margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+      flex: 1;
     }
     .grid {
       display: grid;
@@ -61,18 +79,19 @@
       gap: 16px;
     }
     .card {
-      background: #020617;
+      background: #1f2937;
       border-radius: 12px;
-      border: 1px solid #1f2937;
+      border: 1px solid #374151;
       padding: 12px 12px 16px;
       display: flex;
       flex-direction: column;
       gap: 8px;
-      transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.1s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      cursor: pointer;
     }
     .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.5);
       border-color: #22c55e;
     }
     .card-title {
@@ -80,6 +99,7 @@
       font-weight: 600;
       margin: 0 0 4px;
       color: #f9fafb;
+      line-height: 1.3;
     }
     .card-meta {
       font-size: 12px;
@@ -95,7 +115,7 @@
       font-size: 11px;
       padding: 2px 6px;
       border-radius: 999px;
-      border: 1px solid #374151;
+      border: 1px solid #4b5563;
       color: #9ca3af;
     }
     .card a {
@@ -106,6 +126,7 @@
       margin-top: 32px;
       text-align: center;
       color: #6b7280;
+      font-size: 15px;
     }
     @media (max-width: 640px) {
       header {
@@ -124,40 +145,92 @@
       display: block;
       background: #020617;
       object-fit: cover;
+      aspect-ratio: 16/9;
     }
     .category-bar {
-      padding: 8px 24px 0;
+      padding: 12px 24px 8px;
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 8px;
     }
     .category-chip {
-      font-size: 12px;
-      padding: 4px 10px;
+      font-size: 13px;
+      padding: 6px 14px;
       border-radius: 999px;
       border: 1px solid #4b5563;
-      background: #020617;
+      background: #1f2937;
       color: #9ca3af;
       cursor: pointer;
-      transition: background 0.1s ease, color 0.1s ease, border-color 0.1s ease;
+      transition: all 0.2s ease;
+      font-weight: 500;
     }
     .category-chip:hover {
       border-color: #22c55e;
       color: #e5e7eb;
+      background: #374151;
     }
     .category-chip.active {
       background: #22c55e;
       border-color: #22c55e;
       color: #020617;
+      font-weight: 600;
     }
-
-
+    .load-more-btn {
+      display: block;
+      margin: 32px auto 0;
+      padding: 12px 32px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #e5e7eb;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .load-more-btn:hover {
+      background: #374151;
+      border-color: #22c55e;
+      color: #22c55e;
+    }
+    .load-more-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    footer {
+      padding: 20px 24px;
+      text-align: center;
+      border-top: 1px solid #1f2937;
+      background: #020617;
+      color: #6b7280;
+      font-size: 13px;
+    }
+    footer a {
+      color: #22c55e;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+    .game-count {
+      margin-bottom: 16px;
+      font-size: 14px;
+      color:#9ca3af;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .game-count span {
+      color: #22c55e;
+      font-weight: 600;
+    }
   </style>
 </head>
 
 <body>
 <header>
-  <a href="index.html" style="text-decoration:none; color:inherit; display:flex; align-items:center;">
+  <a href="index.html" style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:8px;">
+    <span style="font-size:24px;">🎮</span>
     <h1>플래시 게임 모음</h1>
   </a>
 
@@ -168,45 +241,90 @@
   <div id="categoryBar" class="category-bar"></div>
 
   <main>
-    <div id="gameCount" style="margin-bottom: 12px; font-size: 13px; color:#9ca3af;"></div>
+    <div class="game-count">
+      총 <span id="gameCount">0</span>개 게임
+    </div>
     <div id="gameGrid" class="grid"></div>
     <div id="emptyMessage" class="empty-msg" style="display:none;">
-      검색 결과가 없습니다.
+      검색 결과가 없습니다. 다른 검색어를 시도해 보세요.
     </div>
   </main>
+
+  <footer>
+    <p>© 2026 플래시 게임 모음 | <a href="index.html">홈으로</a></p>
+  </footer>
 
   <script>
     const BASE_TAGS = [
       "플래시게임", "플래시", "flash game", "ruffle",
       "고전게임", "추억의게임", "옛날게임",
-      "웹게임", "무료게임", "온라인게임",
-      "웹게임추천", "pc게임", "browser game"
+      "웹게임", "무료게임", "온라인게임"
     ];
 
     let allGames = [];
+    let categories = new Set();
 
-const PAGE_SIZE = 60;      // 한 번에 보여줄 카드 수
+const PAGE_SIZE = 60;
 let currentPage = 1;
-let filteredGames = [];    // 검색/카테고리 결과 저장용
+let filteredGames = [];
+let activeCategory = 'all';
 
-// SWF와 같은 번호의 GIF를 썸네일로 사용
-// 예) filename: "1.swf"  ->  "https://game100.com/files/image/s1/1.gif"
 const THUMB_BASE = "/thumbs";
 function getThumbUrl(game) {
   if (!game.filename) return null;
-  const baseName = game.filename.replace(/\.swf$/i, ""); // "1.swf" -> "1"
+  const baseName = game.filename.replace(/\.swf$/i, "");
   return `${THUMB_BASE}/${baseName}.webp`;
 }
 
+function extractCategories(games) {
+  games.forEach(g => {
+    if (g.category) categories.add(g.category);
+  });
+  return Array.from(categories).sort();
+}
+
+function renderCategoryBar() {
+  const bar = document.getElementById('categoryBar');
+  const cats = ['all', ...extractCategories(allGames)];
+  
+  bar.innerHTML = cats.map(cat => {
+    const label = cat === 'all' ? '전체' : cat;
+    const active = activeCategory === cat ? 'active' : '';
+    return `<button class="category-chip ${active}" data-cat="${cat}">${label}</button>`;
+  }).join('');
+
+  bar.querySelectorAll('.category-chip').forEach(btn => {
+    btn.onclick = () => {
+      activeCategory = btn.dataset.cat;
+      filterGames();
+      renderCategoryBar();
+    };
+  });
+}
+
+function filterGames() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  
+  filteredGames = allGames.filter(g => {
+    const matchesSearch = !q || 
+      (g.title || '').toLowerCase().includes(q) ||
+      (g.slug || '').toLowerCase().includes(q);
+    const matchesCategory = activeCategory === 'all' || g.category === activeCategory;
+    return matchesSearch && matchesCategory;
+  });
+  
+  currentPage = 1;
+  renderPage();
+}
 
 async function loadGames() {
   try {
     const res = await fetch('games.json');
     allGames = await res.json();
-    filteredGames = allGames;     // 처음에는 전체
+    filteredGames = allGames;
+    renderCategoryBar();
     currentPage = 1;
     renderPage();
-    setupLoadMore();
   } catch (e) {
     console.error('games.json 로드 실패', e);
   }
@@ -219,18 +337,68 @@ function getCurrentSlice() {
 
 function renderPage() {
   const gamesToRender = getCurrentSlice();
-  renderGames(gamesToRender);     // 기존 renderGames 재사용
+  renderGames(gamesToRender);
   toggleLoadMore();
+  updateCount();
 }
 
-function setupLoadMore() {
-  let btn = document.getElementById('loadMoreBtn');
+function updateCount() {
+  document.getElementById('gameCount').textContent = filteredGames.length;
+}
+
+function renderGames(games) {
+  const grid = document.getElementById('gameGrid');
+  const empty = document.getElementById('emptyMessage');
+
+  grid.innerHTML = '';
+
+  if (!games.length) {
+    empty.style.display = 'block';
+    return;
+  }
+
+  empty.style.display = 'none';
+
+  games.forEach(game => {
+    const a = document.createElement('a');
+    a.href = `game.html?slug=${encodeURIComponent(game.slug)}`;
+
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    const thumbUrl = getThumbUrl(game);
+    if (thumbUrl) {
+      const img = document.createElement('img');
+      img.className = 'card-thumb';
+      img.src = thumbUrl;
+      img.alt = game.title || '게임 썸네일';
+      img.loading = 'lazy';
+      img.onerror = () => { img.style.display = 'none'; };
+      card.appendChild(img);
+    }
+
+    const title = document.createElement('h2');
+    title.className = 'card-title';
+    title.textContent = game.title;
+
+    const meta = document.createElement('div');
+    meta.className = 'card-meta';
+    meta.textContent = game.category || '플래시게임';
+
+    card.appendChild(title);
+    card.appendChild(meta);
+    a.appendChild(card);
+    grid.appendChild(a);
+  });
+}
+
+function toggleLoadMore() {
+  const btn = document.getElementById('loadMoreBtn');
   if (!btn) {
     btn = document.createElement('button');
     btn.id = 'loadMoreBtn';
+    btn.className = 'load-more-btn';
     btn.textContent = '더 보기';
-    btn.style.margin = '24px auto';
-    btn.style.display = 'block';
     document.querySelector('main').appendChild(btn);
 
     btn.onclick = () => {
@@ -238,103 +406,21 @@ function setupLoadMore() {
       renderPage();
     };
   }
-}
-
-function toggleLoadMore() {
-  const btn = document.getElementById('loadMoreBtn');
-  if (!btn) return;
+  
   if (filteredGames.length <= currentPage * PAGE_SIZE) {
     btn.style.display = 'none';
   } else {
     btn.style.display = 'block';
   }
 }
-    function renderGames(games) {
-      const grid = document.getElementById('gameGrid');
-      const empty = document.getElementById('emptyMessage');
-      const count = document.getElementById('gameCount');
 
-      grid.innerHTML = '';
+function setupSearch() {
+  const input = document.getElementById('searchInput');
+  input.addEventListener('input', filterGames);
+}
 
-      if (!games.length) {
-        empty.style.display = 'block';
-        count.textContent = '';
-        return;
-      }
-
-      empty.style.display = 'none';
-      count.textContent = `총 ${games.length}개 게임`;
-
-      games.forEach(game => {
-        const a = document.createElement('a');
-        a.href = `game.html?slug=${encodeURIComponent(game.slug)}`;
-
-        const card = document.createElement('div');
-        card.className = 'card';
-
-    // ===== 썸네일 이미지 추가 =====
-    const thumbUrl = getThumbUrl(game);
-    if (thumbUrl) {
-      const img = document.createElement('img');
-      img.className = 'card-thumb';
-      img.src = thumbUrl;
-      img.loading = 'lazy';
-      // GIF가 없으면 그냥 안 보이게
-      img.onerror = () => { img.style.display = 'none'; };
-      card.appendChild(img);
-    }
-    // ==========================
-
-        const title = document.createElement('h2');
-        title.className = 'card-title';
-        title.textContent = game.title;
-
-        const meta = document.createElement('div');
-        meta.className = 'card-meta';
-        meta.textContent = game.category || '플래시게임';
-
-        const tagsWrap = document.createElement('div');
-        tagsWrap.className = 'card-tags';
-
-        // 공통 태그 + 게임 이름
-        const tags = [...BASE_TAGS, game.title];
-        tags.slice(0, 4).forEach(t => {
-          const span = document.createElement('span');
-          span.className = 'card-tag';
-          span.textContent = t;
-          tagsWrap.appendChild(span);
-        });
-
-        card.appendChild(title);
-        card.appendChild(meta);
-        card.appendChild(tagsWrap);
-        a.appendChild(card);
-        grid.appendChild(a);
-      });
-    }
-
-    function setupSearch() {
-      const input = document.getElementById('searchInput');
-      input.addEventListener('input', () => {
-        const q = input.value.trim().toLowerCase();
-        if (!q) {
-          filteredGames = allGames;
-          return;
-        }
- else {
-    filteredGames = allGames.filter(g =>
-      (g.title || '').toLowerCase().includes(q)
-      || (g.slug || '').toLowerCase().includes(q)
-    );
-  }
-  currentPage = 1;
-  renderPage();
-
-      });
-    }
-
-    loadGames();
-    setupSearch();
+loadGames();
+setupSearch();
   </script>
 </body>
 </html>

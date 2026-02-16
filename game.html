@@ -4,111 +4,206 @@
   <meta charset="UTF-8" />
   <title>플래시 게임</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="플래시 게임을Browser에서 바로 플레이" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>" />
+  <link rel="canonical" href="https://flashgame.example.com/game.html" />
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
-      background: #020617;
-      color: #e5e7eb;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
     header {
-      padding: 12px 16px;
-      border-bottom: 1px solid #1f2937;
+      padding: 14px 20px;
+      border-bottom: 1px solid #1e293b;
       display: flex;
       align-items: center;
-      gap: 8px;
-      background: #020617;
+      gap: 16px;
+      background: #0f172a;
       position: sticky;
       top: 0;
       z-index: 10;
     }
     header a {
-      color: #9ca3af;
+      color: #94a3b8;
       text-decoration: none;
-      font-size: 13px;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all 0.2s;
     }
     header a:hover {
       color: #22c55e;
+      background: #1e293b;
     }
     header h1 {
       margin: 0;
       font-size: 18px;
       flex: 1;
+      color: #f8fafc;
+      font-weight: 600;
     }
     main {
       max-width: 1000px;
       margin: 0 auto;
-      padding: 16px;
+      padding: 20px;
+      width: 100%;
+      flex: 1;
+    }
+    .game-header {
+      margin-bottom: 16px;
+    }
+    .game-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #f8fafc;
+      margin: 0 0 8px;
     }
     .meta {
-      font-size: 13px;
-      color: #9ca3af;
-      margin-bottom: 12px;
+      font-size: 14px;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .meta .category {
+      background: #1e293b;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #22c55e;
     }
     .tags {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin-top: 8px;
-      margin-bottom: 16px;
+      margin-top: 12px;
     }
     .tag {
-      font-size: 11px;
-      padding: 2px 8px;
+      font-size: 12px;
+      padding: 4px 10px;
       border-radius: 999px;
-      border: 1px solid #374151;
-      color: #9ca3af;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      background: #1e293b;
     }
     .game-frame-wrap {
       background: #000;
-      border-radius: 12px;
+      border-radius: 16px;
       overflow: hidden;
-      border: 1px solid #111827;
+      border: 2px solid #1e293b;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
     }
     .game-frame-inner {
       width: 100%;
-      height: 480px;
+      height: 520px;
+      background: #000;
     }
     @media (max-width: 640px) {
       .game-frame-inner {
-        height: 360px;
+        height: 300px;
+      }
+      .game-title {
+        font-size: 20px;
       }
     }
     .desc {
-      margin-top: 16px;
-      font-size: 14px;
-      color: #d1d5db;
-      line-height: 1.5;
+      margin-top: 20px;
+      font-size: 15px;
+      color: #cbd5e1;
+      line-height: 1.6;
+      padding: 16px;
+      background: #1e293b;
+      border-radius: 12px;
+      border: 1px solid #334155;
     }
-    #tagList { display: none; }
-
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      background: #1e293b;
+      color: #22c55e;
+    }
+    footer {
+      padding: 20px;
+      text-align: center;
+      border-top: 1px solid #1e293b;
+      background: #0f172a;
+      color: #64748b;
+      font-size: 13px;
+    }
+    footer a {
+      color: #22c55e;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
   <header>
-    <a href="index.html">← 목록으로</a>
+    <a href="index.html">
+      <span>←</span> 목록으로
+    </a>
     <h1 id="gameTitle">플래시 게임</h1>
   </header>
 
   <main>
-    <div class="meta" id="gameMeta"></div>
-    <div class="tags" id="tagList"></div>
+    <div class="game-header">
+      <h2 id="gameTitleDisplay" class="game-title"></h2>
+      <div class="meta">
+        <span class="category" id="gameCategory"></span>
+        <span id="gameId"></span>
+      </div>
+      <div class="tags" id="tagList"></div>
+    </div>
 
     <div class="game-frame-wrap">
-      <!-- 여기 안에 object/embed를 JS로 주입 -->
-      <div id="gamePlayer" class="game-frame-inner"></div>
+      <div id="gamePlayer" class="game-frame-inner">
+        <div style="display:flex;align-items:center;justify-content:center;height:100%;color:#64748b;">
+          게임 로딩 중...
+        </div>
+      </div>
     </div>
 
     <div class="desc" id="gameDesc"></div>
+    
+    <div style="margin-top: 20px;">
+      <a href="index.html" class="back-btn">← 게임 목록으로 돌아가기</a>
+    </div>
   </main>
+
+  <footer>
+    <p>© 2026 플래시 게임 모음 | <a href="index.html">홈으로</a></p>
+  </footer>
 
   <script>
     const BASE_TAGS = [
       "플래시게임", "플래시", "flash game", "ruffle",
       "고전게임", "추억의게임", "옛날게임",
-      "웹게임", "무료게임", "온라인게임",
-      "웹게임추천", "pc게임", "browser game"
+      "웹게임", "무료게임", "온라인게임"
     ];
 
     function getSlugFromUrl() {
@@ -119,9 +214,11 @@
     async function loadGame() {
       const slug = getSlugFromUrl();
       const titleEl = document.getElementById('gameTitle');
+      const titleDisplay = document.getElementById('gameTitleDisplay');
 
       if (!slug) {
-        titleEl.textContent = '잘못된 접근입니다. (slug 없음)';
+        titleEl.textContent = '잘못된 접근';
+        titleDisplay.textContent = '잘못된 접근입니다.';
         return;
       }
 
@@ -131,39 +228,41 @@
         const game = games.find(g => g.slug === slug);
 
         if (!game) {
-          titleEl.textContent = '게임을 찾을 수 없습니다.';
+          titleEl.textContent = '게임 없음';
+          titleDisplay.textContent = '게임을 찾을 수 없습니다.';
           return;
         }
 
         document.title = `${game.title} - 플래시 게임`;
         titleEl.textContent = game.title;
+        titleDisplay.textContent = game.title;
+        
+        // Category
+        const categoryEl = document.getElementById('gameCategory');
+        categoryEl.textContent = game.category || '플래시게임';
+        
+        // ID
+        document.getElementById('gameId').textContent = `ID: ${game.id}`;
 
-        // 메타 / 설명
-        document.getElementById('gameMeta').textContent =
-          `${game.category || '플래시게임'} · ID: ${game.id}`;
-
+        // Description
         const descEl = document.getElementById('gameDesc');
         if (game.description && game.description.trim()) {
           descEl.textContent = game.description;
         } else {
-          descEl.textContent = '플래시 기반 고전 웹게임입니다.';
+          descEl.textContent = '플래시 기반 고전 웹게임입니다. 바로 플레이해보세요!';
         }
 
-        // 태그 (공통 + 게임 제목)
+        // Tags
         const tagList = document.getElementById('tagList');
-        const tags = [...BASE_TAGS, game.title];
-        tags.forEach(t => {
+        [...BASE_TAGS, game.title].slice(0, 6).forEach(t => {
           const span = document.createElement('span');
           span.className = 'tag';
           span.textContent = t;
           tagList.appendChild(span);
         });
 
-        // SWF 경로 (네 서버 구조에 맞게 조정)
-        // 예: /swf/파일명.swf
+        // SWF player
         const swfPath = `/swf/${encodeURIComponent(game.filename)}`;
-
-        // object + embed 주입 (네가 제시한 패턴)
         const player = document.getElementById('gamePlayer');
         player.innerHTML = `
           <object data="${swfPath}"
@@ -180,14 +279,14 @@
         `;
       } catch (e) {
         console.error(e);
-        titleEl.textContent = '오류가 발생했습니다.';
+        titleEl.textContent = '오류';
+        titleDisplay.textContent = '오류가 발생했습니다.';
       }
     }
 
     loadGame();
   </script>
 
-  <!-- Ruffle: 네가 제시한 방식 그대로 body 끝에서 로드 -->
   <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 </body>
 </html>
