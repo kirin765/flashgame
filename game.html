@@ -7,6 +7,7 @@
   <meta name="description" content="플래시 게임을Browser에서 바로 플레이" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>" />
   <link rel="canonical" href="https://flashgame.example.com/game.html" />
+  <meta name="swf-base-url" content="/swf/" />
 
   <style>
     * {
@@ -160,6 +161,29 @@
     footer a:hover {
       text-decoration: underline;
     }
+    .swf-status {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #94a3b8;
+      text-align: center;
+      padding: 18px;
+      white-space: pre-line;
+      line-height: 1.6;
+      font-size: 14px;
+      background: #0f172a;
+    }
+    .swf-status[data-state="idle"] {
+      display: flex;
+    }
+    .swf-status a {
+      color: #22c55e;
+      text-decoration: none;
+    }
+    .swf-status a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -205,6 +229,60 @@
       "고전게임", "추억의게임", "옛날게임",
       "웹게임", "무료게임", "온라인게임"
     ];
+    const SWF_DEFAULT_BASE_URL = '/swf/';
+    const SWF_QUERY_KEY = 'swfBase';
+    const SWF_CONFIG_KEY = '__SWF_BASE_URL__';
+
+    function normalizeSwfBaseUrl(value) {
+      if (!value || typeof value !== 'string') return SWF_DEFAULT_BASE_URL;
+      const trimmed = value.trim();
+      if (!trimmed) return SWF_DEFAULT_BASE_URL;
+      return trimmed.endsWith('/') ? trimmed : `${trimmed}/`;
+    }
+
+    function getSwfBaseUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const queryValue = params.get(SWF_QUERY_KEY);
+      const globalValue = window[SWF_CONFIG_KEY];
+      const metaEl = document.querySelector('meta[name="swf-base-url"]');
+      const metaValue = metaEl && metaEl.content;
+
+      const rawBase = queryValue || globalValue || metaValue || SWF_DEFAULT_BASE_URL;
+      return normalizeSwfBaseUrl(rawBase);
+    }
+
+    function buildSwfUrl(filename) {
+      const baseUrl = getSwfBaseUrl();
+      try {
+        return new URL(encodeURIComponent(filename), baseUrl).toString();
+      } catch (e) {
+        return `${baseUrl}${encodeURIComponent(filename)}`;
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function showSwfError(swfUrl) {
+      const player = document.getElementById('gamePlayer');
+      const fallbackBase = getSwfBaseUrl();
+      player.innerHTML = `
+        <div class="swf-status" data-state="idle">
+          SWF 로드 실패 또는 경로 문제입니다.\n\n
+          경로: ${escapeHtml(swfUrl)}\n
+          - 파일명 또는 SWF 경로(`/swf/<filename>`)가 정확한지 확인하세요.\n
+          - 운영 배포시엔 meta[name="swf-base-url"] 또는 query(?swfBase=) 값을 외부 스토리지 주소로 지정하세요.\n
+          - 현재 base: ${escapeHtml(fallbackBase)}\n
+          - 또는 관리자에게 swfBase URL을 재설정 요청해주세요.
+        </div>
+      `;
+    }
 
     function getSlugFromUrl() {
       const params = new URLSearchParams(window.location.search);
@@ -262,21 +340,59 @@
         });
 
         // SWF player
-        const swfPath = `/swf/${encodeURIComponent(game.filename)}`;
+        const swfPath = buildSwfUrl(game.filename);
         const player = document.getElementById('gamePlayer');
+        const safeSwfPath = escapeHtml(swfPath);
+        const statusId = `swf-status-${Date.now()}`;
+
         player.innerHTML = `
-          <object data="${swfPath}"
-                  type="application/x-shockwave-flash"
-                  width="100%" height="100%">
-            <param name="movie" value="${swfPath}">
-            <param name="allowScriptAccess" value="sameDomain">
-            <param name="allowFullScreen" value="true">
-            <embed src="${swfPath}"
-                   width="100%" height="100%"
-                   allowScriptAccess="sameDomain"
-                   allowFullScreen="true" />
-          </object>
+          <div id="${statusId}" class="swf-status" data-state="idle">게임을 로드하는 중입니다...</div>
         `;
+        const statusNode = document.getElementById(statusId);
+
+        const object = document.createElement('object');
+        object.type = 'application/x-shockwave-flash';
+        object.setAttribute('data', swfPath);
+        object.setAttribute('width', '100%');
+        object.setAttribute('height', '100%');
+
+        const movie = document.createElement('param');
+        movie.setAttribute('name', 'movie');
+        movie.setAttribute('value', swfPath);
+        const allowScriptAccess = document.createElement('param');
+        allowScriptAccess.setAttribute('name', 'allowScriptAccess');
+        allowScriptAccess.setAttribute('value', 'sameDomain');
+        const allowFullScreen = document.createElement('param');
+        allowFullScreen.setAttribute('name', 'allowFullScreen');
+        allowFullScreen.setAttribute('value', 'true');
+
+        const embed = document.createElement('embed');
+        embed.src = swfPath;
+        embed.setAttribute('width', '100%');
+        embed.setAttribute('height', '100%');
+        embed.setAttribute('allowScriptAccess', 'sameDomain');
+        embed.setAttribute('allowFullScreen', 'true');
+
+        object.appendChild(movie);
+        object.appendChild(allowScriptAccess);
+        object.appendChild(allowFullScreen);
+        object.appendChild(embed);
+
+        const onSwfError = () => {
+          statusNode.style.display = 'none';
+          showSwfError(swfPath);
+        };
+        const onSwfLoad = () => {
+          statusNode.style.display = 'none';
+        };
+
+        object.addEventListener('error', onSwfError, { once: true });
+        object.addEventListener('load', onSwfLoad, { once: true });
+        embed.addEventListener('error', onSwfError, { once: true });
+        embed.addEventListener('load', onSwfLoad, { once: true });
+        object.onerror = onSwfError;
+
+        player.appendChild(object);
       } catch (e) {
         console.error(e);
         titleEl.textContent = '오류';
